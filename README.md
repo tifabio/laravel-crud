@@ -14,15 +14,14 @@ $ docker-compose exec app php artisan migrate --seed
 $ docker-compose up -d
 ```
 
-## Make crud:
+### Make crud:
 ```
-php artisan make:crud {table_name}
+$ php artisan make:crud {table_name}
 
-php artisan make:crud banks
+$ php artisan make:crud banks
 ```
 
 Add a route in `web.php`
 ```
 Route::resource('banks', 'BankController');
 ```
-Route name in plural slug case.
