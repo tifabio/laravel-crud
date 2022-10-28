@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+    # image project
+    app:
+        container_name: laravelcrud-app
+        build:
+            context: ./docker
+            dockerfile: Dockerfile
+        image: tifabio/laravelcrud-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks: 
+            - laravelcrudnetwork
+    
+    # nginx
+    nginx:
+        container_name: laravelcrud-nginx
+        image: nginx:alpine
+        restart: unless-stopped
+        ports: 
+            - "8080:80"
+        volumes: 
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+        networks: 
+            - laravelcrudnetwork
+
+    # db mysql
+    mysql:
+        container_name: laravelcrud-mysql
+        image: mysql:5.7.39
+        
+        restart: unless-stopped
+        ports: 
+            - "3306:3306"
+        environment: 
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+        volumes: 
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        networks: 
+            - laravelcrudnetwork
+
+networks: 
+    laravelcrudnetwork:
+        driver: bridge
